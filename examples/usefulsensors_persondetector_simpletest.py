@@ -17,8 +17,14 @@ while not i2c.try_lock():
 
 try:
     while True:
-        (x0,y0,x1,y1,confidence,id,id_confidence) = sensor.read()
-        print("X0: ",x0," Y0: ",y0," X1: ", x1," Y1: ", y1, " Confidence: ", confidence, " ID: ", id, " ID Confidence: ", id_confidence)
+        results = sensor.read()
+        num_faces = results[0]
+        bboxes = results[1]
+        print("Found ",num_faces," faces:")
+        #print(bboxes)
+        for i in range(num_faces):
+            bbox = bboxes[i]
+            print("X0: ",bbox["x0"]," Y0: ",bbox["y0"]," X1: ", bbox["x1"]," Y1: ", bbox["y1"], " Confidence: ", bbox["confidence"], " ID: ", bbox["id"], " ID Confidence: ", bbox["id_confidence"], " Face On: ", bbox["face_on"] )
         time.sleep(1)
 except Exception as e: print(e)
 finally:  # unlock the i2c bus when ctrl-c'ing out of the loop
